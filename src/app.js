@@ -18,7 +18,7 @@ const app = express();
 //    next();
 // })
 
-
+app.use(express.urlencoded({ extended: true }))
 app.use(helmet());
 const morgan = require('morgan');
 

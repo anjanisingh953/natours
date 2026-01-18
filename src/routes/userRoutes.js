@@ -1,8 +1,10 @@
+
+const express = require('express');
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 
-const express = require('express');
 const router = express.Router()
+
 
 // router.use((req,res,next)=>{
 //    req.requestedTime = new Date().toLocaleDateString();
@@ -19,7 +21,7 @@ router.use(authController.protect);
 
 router.patch('/updateMyPassword', authController.updatePassword);
 router.get('/me', userController.getMe, userController.getSingleUser);
-router.patch('/updateMe', userController.updateMe);
+router.patch('/updateMe', userController.uploadSingleFile,  userController.resizeUserPhoto, userController.updateMe);
 router.delete('/deleteMe', userController.deleteMe);
 
 router.use(authController.restrictTo('admin'));
