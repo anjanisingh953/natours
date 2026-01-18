@@ -30,6 +30,8 @@ const limiter = rateLimit({
   windowMs: 60 * 60 * 60, //1hours
   message: 'Too many requests from this IP, please try again after 1 hours'
 })
+//To get nested Object from req.query
+app.set('query parser', 'extended');
 
 app.use('/api',limiter);
 

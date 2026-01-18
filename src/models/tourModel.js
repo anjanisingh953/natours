@@ -30,7 +30,8 @@ const tourSchema = new mongoose.Schema({
         type:Number,
         default:4.5,
         min:1,
-        max:5
+        max:5,
+        set: val => Math.round(val * 10 ) /10
     },
     ratingQuantity:{
         type:Number,
@@ -107,6 +108,10 @@ const tourSchema = new mongoose.Schema({
     toObject:{virtuals:true}
 })
 
+
+tourSchema.index({ price:1, ratingAverage: -1 });
+tourSchema.index({ startLocation: '2dsphere' });
+
 tourSchema.virtual('durationWeeks').get(function(){
     return Math.ceil(this.duration/7) 
 })
@@ -133,16 +138,16 @@ tourSchema.pre('save', async  function() {
 tourSchema.pre(/^find/, function(){
     this.find({secretTour:{$ne:true}})
 })
-tourSchema.pre(/^find/, function(){
+tourSchema.pre(/^findOne/, function(){
     this.populate({path:'guides',select:'-__v'})
 })
 
 
 
-//AggregateMiddleware
-tourSchema.pre('aggregate',async function(){
-    this.pipeline().unshift({ $match:{secretToyr:{$ne:true}} });
-})
+// //AggregateMiddleware
+// tourSchema.pre('aggregate',async function(){
+//     this.pipeline().unshift({ $match:{secretToyr:{$ne:true}} });
+// })
 
 
 const Tour = mongoose.model('Tour',tourSchema);
