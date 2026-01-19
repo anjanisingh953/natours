@@ -4,18 +4,27 @@ const nodemailer =  require('nodemailer');
 const sendEmail =   async options=>{
     //create transport
     let transporter = nodemailer.createTransport({
+ // Gmail Settings
         service: 'gmail',
         auth: {
-            user: 'anjanisingh0019@gmail.com',
-            pass: 'djkmvnfwchmkaqzn'
+            user: process.env.Gmail_User,
+            pass: process.env.Gmail_APIKEY
         }
-        });
+  
+ // Sendgrid Settings
+        // service: 'SendGrid',
+        //     auth: {
+        //         user: process.env.SendGrid_User,
+        //         pass: process.env.SendGrid_APIKEY
+        //     }
+   
+    });
         
         //Activate in gmail "less secure app" options
 
     //Define the email options    
         let mailOptions = {
-            from: '"Tour_App" <<anjanisingh0019@gmail.com>>',
+            from: `Tour_App ${process.env.Gmail_Sender_Info}` ,
             to: 'anjanisingh953@gmail.com',
             subject: options.subject || 'subjet test',
             text: options.message  || 'subject message'
@@ -26,7 +35,7 @@ const sendEmail =   async options=>{
             const result =  await transporter.sendMail(mailOptions);
             // console.log("email result",result)
         }catch(err){
-            // console.log("email err ?>>>>",err)
+            console.log("email err ?>>>>",err)
         }
 
             
