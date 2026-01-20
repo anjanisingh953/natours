@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
@@ -9,17 +10,26 @@ const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
+const viewRouter = require('./routes/viewRoutes');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const app = express();
 
-// router.use((req,res,next)=>{
-//    req.requestedTime = new Date().toLocaleDateString();
-//    next();
-// })
+//Global middleware
+  // router.use((req,res,next)=>{
+  //    req.requestedTime = new Date().toLocaleDateString();
+  //    next();
+  // })
 
-app.use(express.urlencoded({ extended: true }))
+ app.use(express.urlencoded({ extended: true }))
+
+ app.set('view engine','pug');
+ app.set('views',path.join(__dirname,'views')); 
+ //To access static file on the browser
+ app.use(express.static('public'))
+
+
 app.use(helmet());
 const morgan = require('morgan');
 
@@ -52,14 +62,14 @@ app.use(hpp({
       'difficulty','price'
     ]
 }))
+
+
+app.use('/',viewRouter);
 app.use('/api/v1/users/',userRouter);
 app.use('/api/v1/tours/',tourRouter);
 app.use('/api/v1/reviews/',reviewRouter);
 app.use('/api/v1/bookings/',bookingRouter);
 
-app.use('/',(req,res)=>{
-  res.status(200).json({status:'success',message:"Welcome to Natours Home"})
-})
 
 app.all(/.*/,(req,res,next)=>{
 //   const err = new Error(`Can't find ${req.originalUrl} on this server`);

@@ -8,7 +8,7 @@ const { token } = require('morgan');
 const sendEmail = require('../utils/email');
 
 const signToken = id =>{
-    return jwt.sign({id},'secret',{expiresIn:'1d'});
+    return jwt.sign({id},process.env.JWT_Secret,{expiresIn:'1d'});
 }
 
 const createSendToken = (user, statusCode, res)=>{
@@ -79,7 +79,7 @@ console.log('token protect',token);
         return next(new AppError('You are not logged in. Please login to access it.',400))
     }
     // 2. verfication token 
-        const decoded = await promisify(jwt.verify)(token, 'secret');
+        const decoded = await promisify(jwt.verify)(token, process.env.JWT_Secret);
         console.log('decoded ',decoded);
         
     // 3. Check if user still exists
